@@ -1,0 +1,15 @@
+spring:
+    profiles:
+        active: dev
+    datasource:
+        url:
+        username:
+        password:
+        driver-class-name: org.postgresql.Driver
+    flyway:
+        enabled: true
+    jpa:
+        database: postgresql
+        hibernate:
+            ddl-auto: validate
+        database-platform: org.hibernate.dialect.PostgreSQLDialect
