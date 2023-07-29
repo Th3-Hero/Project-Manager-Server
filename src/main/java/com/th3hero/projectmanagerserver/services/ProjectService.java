@@ -6,12 +6,10 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.th3hero.projectmanagerserver.dto.Project;
 import com.th3hero.projectmanagerserver.entities.FieldJpa;
 import com.th3hero.projectmanagerserver.entities.ProjectJpa;
 import com.th3hero.projectmanagerserver.entities.TagJpa;
-import com.th3hero.projectmanagerserver.objects.Field;
-import com.th3hero.projectmanagerserver.objects.Project;
-import com.th3hero.projectmanagerserver.objects.Tag;
 import com.th3hero.projectmanagerserver.repositories.ProjectRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -23,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 public class ProjectService {
     private final ProjectRepository projectRepository;
+    private final DataManagerFactory dataManagerFactory;
 
     // public ProjectJpa saveProject(ProjectJpa project) {
     //     UUID projectId = project.getId();
@@ -48,7 +47,7 @@ public class ProjectService {
     public List<Project> getAllProjects() {
         List<ProjectJpa> projectsJpa = projectRepository.findAll();
 
-        return projectsJpa.stream().map(project -> project.convertToDTO()).toList();
+        return projectsJpa.stream().map(project -> dataManagerFactory.convertToDto(project)).toList();
     }
 
     public Project getProjectById(UUID projectId) {
@@ -56,11 +55,7 @@ public class ProjectService {
         if (project.isEmpty()) {
             throw new EntityNotFoundException("Unable to find Project with provided id");
         }
-        return project.get().convertToDTO();
+        return dataManagerFactory.convertToDto(project.get());
     }
-
-    // public Project createProject(Project project) {
-
-    // }
 
 }

@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.th3hero.projectmanagerserver.dto.Project;
 import com.th3hero.projectmanagerserver.entities.ProjectJpa;
-import com.th3hero.projectmanagerserver.objects.Project;
 import com.th3hero.projectmanagerserver.services.ProjectService;
 
 import jakarta.validation.constraints.NotBlank;
