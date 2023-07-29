@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,12 +15,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.th3hero.projectmanagerserver.dto.Project;
-import com.th3hero.projectmanagerserver.entities.ProjectJpa;
 import com.th3hero.projectmanagerserver.services.ProjectService;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
-
 
 @Validated
 @RestController
@@ -40,34 +38,28 @@ public class ProjectController {
         return projectService.getProjectById(projectId);
     }
 
-    // @PostMapping("/")
-    // public Project saveProject(
-    //     @RequestBody Project project
-    // ) {
+    // TODO: I'm lost, I want name to be required and to be able to only provide name
+    @PostMapping("/create")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Project createProject(
+        @RequestBody Project project
+    ) {
+        return projectService.createProject(project);
+    }
 
-    // }
+    @DeleteMapping("/{projectId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteProject(
+        @PathVariable UUID projectId
+    ) {
+        projectService.deleteProject(projectId);
+    }
 
-    // @PostMapping
-    // public ProjectJpa saveProject(
-    //     @RequestBody ProjectJpa project
-    // ) {
-    //     return projectService.saveProject(project);
-    // }
-
-    // @PostMapping("/create")
-    // public ProjectJpa createProject(
-    //     @RequestBody Project project
-    // ) {
-    //     return projectService.createProject(project);
-    // }
-
-    // @PostMapping("/delete/{projectId}")
-    // public String deleteProject(
-    //     @PathVariable @NotBlank(message = "Project id is required to delete a project") UUID projectId
-    // ) {
-    //     projectService.deleteProject(projectId);
-    //     return "Project deleted";
-    // }
-
+    @PostMapping("/")
+    public Project updateProject(
+        @RequestBody Project project
+    ) {
+        return projectService.updateProject(project);
+    }
 
 }

@@ -3,6 +3,8 @@ package com.th3hero.projectmanagerserver.entities;
 import java.io.Serializable;
 import java.util.UUID;
 
+import com.th3hero.projectmanagerserver.dto.Field;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -45,4 +47,11 @@ public class FieldJpa implements Serializable {
     @Column
     private String content;
 
+    public Field convertToDto () {
+        return new Field(
+            this.getId(),
+            this.getTitle(),
+            this.getContent()
+        );
+    }
 }

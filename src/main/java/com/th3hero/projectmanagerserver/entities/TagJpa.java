@@ -3,6 +3,8 @@ package com.th3hero.projectmanagerserver.entities;
 import java.io.Serializable;
 import java.util.UUID;
 
+import com.th3hero.projectmanagerserver.dto.Tag;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -41,4 +43,11 @@ public class TagJpa implements Serializable {
     @NonNull
     private String hexColor;
 
+    public Tag convertToDto() {
+        return new Tag(
+            this.getId(),
+            this.getName(),
+            this.getHexColor()
+        );
+    }
 }

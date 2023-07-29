@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
+import com.th3hero.projectmanagerserver.dto.Project;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -59,11 +61,14 @@ public class ProjectJpa implements Serializable {
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<TagJpa> tags;
 
-    public static ProjectJpa create(String name, String description) {
-        return builder()
-            .name(name)
-            .description(description)
-            .build();
+    public Project convertToDto() {
+        return new Project(
+            this.getId(),
+            this.getName(),
+            this.getDescription(),
+            this.getFields().stream().map(field -> field.convertToDto()).toList(),
+            this.getTags().stream().map(tag -> tag.convertToDto()).toList()
+        );
     }
 
 }
