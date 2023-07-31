@@ -1,11 +1,13 @@
 package com.th3hero.projectmanagerserver.entities;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.UUID;
 
 import com.th3hero.projectmanagerserver.dto.Project;
 
+import com.th3hero.projectmanagerserver.utils.CollectionUtils;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,6 +20,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,16 +45,22 @@ public class ProjectJpa implements Serializable {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @NotNull
     @Column
     private String name;
 
+    @NotNull
     @Column
     private String description;
 
+    @NotNull
+    @Builder.Default
     @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FieldJpa> fields;
+    private Collection<FieldJpa> fields = new ArrayList<>();
 
+    @NotNull
+    @Builder.Default
     @Setter(AccessLevel.NONE)
     @JoinTable(
         name = "project_tag",
@@ -59,7 +68,15 @@ public class ProjectJpa implements Serializable {
         inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<TagJpa> tags;
+    private Collection<TagJpa> tags = new ArrayList<>();
+
+    public void setFields(Collection<FieldJpa> fields) {
+        CollectionUtils.replaceList(this.fields, fields);
+    }
+
+    public void setTags(Collection<TagJpa> tags) {
+        CollectionUtils.replaceList(this.tags, tags);
+    }
 
     public Project convertToDto() {
         return new Project(

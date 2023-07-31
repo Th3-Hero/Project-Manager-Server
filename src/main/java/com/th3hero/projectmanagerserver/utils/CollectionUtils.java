@@ -50,7 +50,15 @@ public class CollectionUtils {
             .toList();
     }
 
-    public static <T> Collection<T> replaceList(Collection<T> destination, Collection<T> source) {
+    /**
+     * Replaces the destination collection with the source collection. <P>
+     * Used for hibernate managed collections.
+     *
+     * @param destination The collection to replace
+     * @param source The collection the destination will be replaced with
+     * @return destination repopulated by source
+     */
+    public static <T> Collection<T> replaceList(final Collection<T> destination, final Collection<T> source) {
         destination.clear();
         destination.addAll(source);
         return destination;

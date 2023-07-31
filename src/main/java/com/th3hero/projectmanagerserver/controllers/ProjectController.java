@@ -1,7 +1,6 @@
 package com.th3hero.projectmanagerserver.controllers;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -16,10 +15,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.th3hero.projectmanagerserver.dto.Project;
+import com.th3hero.projectmanagerserver.dto.ProjectUpload;
 import com.th3hero.projectmanagerserver.services.ProjectService;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 
 @Validated
 @RestController
@@ -29,8 +29,8 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @GetMapping("/list")
-    public List<Project> getProjects() {
-        return projectService.getAllProjects();
+    public Collection<Project> listProjects() {
+        return projectService.listProjects();
     }
 
     @GetMapping("/{projectId}")
@@ -40,13 +40,20 @@ public class ProjectController {
         return projectService.getProjectById(projectId);
     }
 
-    // TODO: I'm lost, I want name to be required and to be able to only provide name
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public Project createProject(
-        @RequestBody Project project
+        @RequestBody ProjectUpload project
     ) {
         return projectService.createProject(project);
+    }
+
+    @PostMapping("/{projectId}")
+    public Project updateProject(
+        @PathVariable UUID projectId,
+        @RequestBody ProjectUpload project
+    ) {
+        return projectService.updateProject(projectId, project);
     }
 
     @DeleteMapping("/{projectId}")
@@ -55,13 +62,6 @@ public class ProjectController {
         @PathVariable UUID projectId
     ) {
         projectService.deleteProject(projectId);
-    }
-
-    @PostMapping("/")
-    public Project updateProject(
-        @RequestBody Project project
-    ) {
-        return projectService.updateProject(project);
     }
 
 }

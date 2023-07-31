@@ -1,11 +1,14 @@
 package com.th3hero.projectmanagerserver.services;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import com.th3hero.projectmanagerserver.dto.TagUpload;
 import org.springframework.stereotype.Service;
 
 import com.th3hero.projectmanagerserver.dto.Project;
+import com.th3hero.projectmanagerserver.dto.ProjectUpload;
 import com.th3hero.projectmanagerserver.entities.FieldJpa;
 import com.th3hero.projectmanagerserver.entities.ProjectJpa;
 import com.th3hero.projectmanagerserver.entities.TagJpa;
@@ -23,11 +26,11 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
 
     @SuppressWarnings("java:S1612")
-    public List<Project> getAllProjects() {
-        return projectRepository.findAll()
-            .stream()
-            .map(project -> project.convertToDto())
-            .toList();
+    public Collection<Project> listProjects() {
+        return CollectionUtils.transform(
+            projectRepository.findAll(),
+                ProjectJpa::convertToDto
+        );
     }
 
     public Project getProjectById(UUID projectId) {
@@ -37,21 +40,13 @@ public class ProjectService {
         return projectJpa.convertToDto();
     }
 
-    public Project createProject(Project project) {
-        return projectRepository.save(project.convertToJpa(true)).convertToDto();
-    }
-
-    public void deleteProject(UUID projectId) {
-        if (!projectRepository.existsById(projectId)) {
-            throw new EntityNotFoundException("Unable to find Project with provided id");
-        }
-
-        projectRepository.deleteById(projectId);
+    public Project createProject(ProjectUpload project) {
+        return projectRepository.save(project.convertToJpa()).convertToDto();
     }
 
     @SuppressWarnings("java:S1612")
-    public Project updateProject(Project project) {
-        ProjectJpa projectJpa = projectRepository.findById(project.id())
+    public Project updateProject(UUID projectId, ProjectUpload project) {
+        ProjectJpa projectJpa = projectRepository.findById(projectId)
             .orElseThrow(() -> new EntityNotFoundException("Unable to find existing project with given id"));
 
         if (project.name() != null) {
@@ -65,10 +60,19 @@ public class ProjectService {
             CollectionUtils.replaceList(projectJpa.getFields(), fields);
         }
         if (project.tags() != null || !project.tags().isEmpty()) {
-            List<TagJpa> tagJpas = project.tags().stream().map(tag -> tag.convertToJpa()).toList();
+            List<TagJpa> tagJpas = project.tags().stream().map(TagUpload::convertToJpa).toList();
             CollectionUtils.replaceList(projectJpa.getTags(), tagJpas);
         }
 
         return projectRepository.save(projectJpa).convertToDto();
     }
+
+    public void deleteProject(UUID projectId) {
+        if (!projectRepository.existsById(projectId)) {
+            throw new EntityNotFoundException("Unable to find Project with provided id");
+        }
+
+        projectRepository.deleteById(projectId);
+    }
+
 }

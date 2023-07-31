@@ -1,19 +1,31 @@
 package com.th3hero.projectmanagerserver.services;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import com.th3hero.projectmanagerserver.exceptions.ActionAlreadyPreformedException;
 import org.springframework.stereotype.Service;
 
+import com.th3hero.projectmanagerserver.dto.Project;
 import com.th3hero.projectmanagerserver.dto.Tag;
+import com.th3hero.projectmanagerserver.dto.TagUpload;
 import com.th3hero.projectmanagerserver.entities.ProjectJpa;
 import com.th3hero.projectmanagerserver.entities.TagJpa;
+import com.th3hero.projectmanagerserver.exceptions.FailedExpectedEntityRetrievalException;
 import com.th3hero.projectmanagerserver.repositories.ProjectRepository;
 import com.th3hero.projectmanagerserver.repositories.TagRepository;
+import com.th3hero.projectmanagerserver.utils.CollectionUtils;
+
+import static com.th3hero.projectmanagerserver.utils.HttpUtil.MISSING_PROJECT_WITH_ID;
+import static com.th3hero.projectmanagerserver.utils.HttpUtil.MISSING_TAG_WITH_ID;
+
+
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
 
 @Service
 @Transactional
@@ -23,52 +35,79 @@ public class TagService {
     private final TagRepository tagRepository;
 
     @SuppressWarnings("java:S1612")
-    public List<Tag> getTagsOnProject(UUID projectId) {
-        ProjectJpa projectJpa = projectRepository.findById(projectId)
-            .orElseThrow(() -> new EntityNotFoundException("Unable to find project with provided id"));
+    public Collection<Tag> listTags() {
+        return CollectionUtils.transform(
+            tagRepository.findAll(),
+                TagJpa::convertToDto
+        );
+    }
 
-        return projectJpa.getTags()
-            .stream()
-            .map(tag -> tag.convertToDto())
-            .toList();
+    @SuppressWarnings("java:S1612")
+    public Collection<Tag> getTagsOnProject(UUID projectId) {
+        ProjectJpa projectJpa = projectRepository.findById(projectId)
+            .orElseThrow(() -> new EntityNotFoundException(MISSING_PROJECT_WITH_ID));
+
+        return CollectionUtils.transform(
+            projectJpa.getTags(),
+                TagJpa::convertToDto
+        );
+    }
+
+    public Tag createTag(TagUpload tagUpload) {
+        TagJpa tagJpa = TagJpa.builder()
+            .name(tagUpload.name())
+            .hexColor(tagUpload.hexColor())
+            .build();
+
+        return tagRepository.save(tagJpa).convertToDto();
+    }
+
+    public Tag updateTag(UUID tagId, TagUpload tagUpload) {
+        TagJpa tagJpa = tagRepository.findById(tagId)
+            .orElseThrow(() -> new EntityNotFoundException(MISSING_TAG_WITH_ID));
+
+        tagJpa.setName(tagUpload.name());
+        tagJpa.setHexColor(tagUpload.hexColor());
+
+        return tagRepository.save(tagJpa).convertToDto();
     }
 
     public void deleteTagById(UUID tagId) {
         if (!tagRepository.existsById(tagId)) {
-            throw new EntityNotFoundException("Unable to find Tag with provided id");
+            throw new EntityNotFoundException(MISSING_TAG_WITH_ID);
         }
 
-        // Search for all projects that use the given tag
-        List<ProjectJpa> projectJpasToUpdate = projectRepository.findAll()
-            .stream()
-            .filter(project -> project.getTags()
-                .stream()
-                .anyMatch(tag -> tag.getId().equals(tagId)))
-            .toList();
+        List<ProjectJpa> projectJpasToUpdate = projectRepository.findAllByTagsId(tagId);
+
 
         // For all projects that use the given tag
         projectJpasToUpdate.forEach(project ->
             // Get tags, remove the tag with the matching id
             project.getTags().remove(
-                project.getTags()
-                    .stream()
-                    .filter(tag -> tag.getId().equals(tagId))
-                    .findFirst()
-                    .get()
+                CollectionUtils.findIn(
+                    project.getTags(),
+                    tag -> tag.getId().equals(tagId)
+                ).orElseThrow(() -> new FailedExpectedEntityRetrievalException("Failed to find expected entity to remove tag from"))
             )
         );
 
         tagRepository.deleteById(tagId);
     }
 
-    public Tag updateTag(Tag tag) {
-        TagJpa tagJpa = tagRepository.findById(tag.id())
-            .orElseThrow(() -> new EntityNotFoundException("Unable to find existing tag with given id"));
+    public Project addTagToProject(UUID tagId, UUID projectId) {
+        ProjectJpa projectJpa = projectRepository.findById(projectId)
+            .orElseThrow(() -> new EntityNotFoundException(MISSING_PROJECT_WITH_ID));
 
-        tagJpa.setName(tag.name());
-        tagJpa.setHexColor(tag.hexColor());
+        if (projectJpa.getTags().stream().anyMatch(tag -> tag.getId().equals(tagId))) {
+            throw new ActionAlreadyPreformedException("The tag was already found on the specified project");
+        }
 
-        return tagRepository.save(tagJpa).convertToDto();
+        TagJpa tagJpa = tagRepository.findById(tagId)
+            .orElseThrow(() -> new EntityNotFoundException(MISSING_TAG_WITH_ID));
+
+        projectJpa.getTags().add(tagJpa);
+
+        return projectRepository.save(projectJpa).convertToDto();
     }
 
 }

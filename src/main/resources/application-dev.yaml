@@ -3,3 +3,7 @@ spring:
         url: jdbc:postgresql://localhost:5432/project-manager-server
         username: dev
         password: dev
+# server:
+#     port:
+app:
+    url: http://localhost:5555/

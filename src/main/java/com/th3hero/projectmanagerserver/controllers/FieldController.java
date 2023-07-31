@@ -1,6 +1,6 @@
 package com.th3hero.projectmanagerserver.controllers;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.th3hero.projectmanagerserver.dto.Field;
+import com.th3hero.projectmanagerserver.dto.FieldUpload;
 import com.th3hero.projectmanagerserver.services.FieldService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,17 +27,32 @@ import lombok.RequiredArgsConstructor;
 public class FieldController {
     private final FieldService fieldService;
 
-    @GetMapping("/fields/{projectId}")
-    public List<Field> getFieldsOnProject(
+    @GetMapping("/{projectId}")
+    public Collection<Field> getFieldsOnProject(
         @PathVariable UUID projectId
     ) {
         return fieldService.getFieldsOnProject(projectId);
     }
 
-    // TODO: Create field on project
+    @PostMapping("/create/{projectId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Field createField(
+        @PathVariable UUID projectId,
+        @RequestBody FieldUpload fieldUpload
+    ) {
+        return fieldService.createField(projectId, fieldUpload);
+    }
 
+    @PostMapping("/{fieldId}/{projectId}")
+    public Field updateField(
+        @PathVariable UUID fieldId,
+        @PathVariable UUID projectId,
+        @RequestBody FieldUpload fieldUpload
+    ) {
+        return fieldService.updateField(fieldId, projectId, fieldUpload);
+    }
 
-    @DeleteMapping("/{projectId}/{fieldId}")
+    @DeleteMapping("/{fieldId}/{projectId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteField(
         @PathVariable UUID projectId,
@@ -45,10 +61,4 @@ public class FieldController {
         fieldService.deleteField(projectId, fieldId);
     }
 
-    // @PostMapping("/")
-    // public Field updateField(
-    //     @RequestBody Field field
-    // ) {
-    //     return fieldService.updateField(field);
-    // }
 }

@@ -58,7 +58,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
-            <version>2.0.0-M6</version>
+            <version>2.1.0</version>
         </dependency>
     <!-- Test -->
         <dependency>
@@ -105,6 +105,35 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>cz.habarta.typescript-generator</groupId>
+                <artifactId>typescript-generator-maven-plugin</artifactId>
+                <version>3.2.1263</version>
+                <executions>
+                    <execution>
+                        <?m2e execute onConfiguration,onIncremental?>
+                        <id>generate</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>process-classes</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jsonLibrary>jackson2</jsonLibrary>
+                    <classes>
+                        <class>com.th3hero.projectmanagerserver.dto.Field</class>
+                        <class>com.th3hero.projectmanagerserver.dto.FieldUpload</class>
+                        <class>com.th3hero.projectmanagerserver.dto.Tag</class>
+                        <class>com.th3hero.projectmanagerserver.dto.TagUpload</class>
+                        <class>com.th3hero.projectmanagerserver.dto.Project</class>
+                        <class>com.th3hero.projectmanagerserver.dto.ProjectUpload</class>
+                    </classes>
+                    <outputKind>module</outputKind>
+                    <!-- <outputFileType>implementationFile</outputFileType> -->
+                    <outputFile>./target/typescript-generator/project-manager-dtos.d.ts</outputFile>
                 </configuration>
             </plugin>
         </plugins>

@@ -2,14 +2,14 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE project (
     id uuid PRIMARY KEY,
-    name text,
+    name text NOT NULL,
     description text
 );
 
 CREATE TABLE tag (
     id uuid PRIMARY KEY,
-    name text,
-    hex_color VARCHAR(6)
+    name text NOT NULL,
+    hex_color VARCHAR(6) NOT NULL
 );
 
 CREATE TABLE field (

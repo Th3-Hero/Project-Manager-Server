@@ -2,6 +2,8 @@ package com.th3hero.projectmanagerserver.utils;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -51,5 +53,26 @@ class CollectionUtilsTest {
         final var result = CollectionUtils.transform(list, num -> num + 1);
 
         assertThat(result).containsExactly(2, 3, 4);
+    }
+
+    @Test
+    void replaceList() {
+        final var destination = new ArrayList<>(Arrays.asList(1, 2, 3));
+        final var source = new ArrayList<>(Arrays.asList(4, 5, 6));
+
+        final var result = CollectionUtils.replaceList(destination, source);
+
+        assertThat(result).containsExactly(4, 5, 6);
+        assertThat(source).containsExactly(4, 5, 6);
+    }
+
+    @Test
+    void replaceList_emptySource() {
+        final List<Integer> destination = new ArrayList<>(Arrays.asList(1, 2, 3));
+        final List<Integer> source = new ArrayList<>(Arrays.asList());
+
+        final var result = CollectionUtils.replaceList(destination, source);
+
+        assertThat(result).isEmpty();
     }
 }
