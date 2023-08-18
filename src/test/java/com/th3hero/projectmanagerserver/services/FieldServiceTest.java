@@ -3,17 +3,17 @@ package com.th3hero.projectmanagerserver.services;
 import com.th3hero.projectmanagerserver.TestEntities;
 import com.th3hero.projectmanagerserver.dto.Field;
 import com.th3hero.projectmanagerserver.dto.FieldUpload;
-import com.th3hero.projectmanagerserver.entities.ProjectJpa;
 import com.th3hero.projectmanagerserver.repositories.ProjectRepository;
-import com.th3hero.projectmanagerserver.utils.HttpUtil;
+import com.th3hero.projectmanagerserver.utils.HttpErrorUtil;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -21,8 +21,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-
-import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 class FieldServiceTest {
@@ -101,8 +99,8 @@ class FieldServiceTest {
 
         final Field result = fieldService.createField(projectId, fieldUpload);
 
-        assertThat(result.title()).isNotNull();
-        assertThat(result.content()).isNotNull();
+        assertThat(result.title()).isEmpty();
+        assertThat(result.content()).isEmpty();
     }
 
     @Test
@@ -169,8 +167,8 @@ class FieldServiceTest {
 
         final var result = fieldService.updateField(fieldId, projectId, fieldUpload);
 
-        assertThat(result.title()).isNotNull();
-        assertThat(result.content()).isNotNull();
+        assertThat(result.title()).isEmpty();
+        assertThat(result.content()).isEmpty();
     }
 
     @Test
@@ -183,15 +181,10 @@ class FieldServiceTest {
 
         when(projectRepository.findById(projectId))
                 .thenReturn(Optional.of(projectJpa));
-        when(projectRepository.save(any()))
-                .thenAnswer(AdditionalAnswers.returnsFirstArg());
-
-        ArgumentCaptor<ProjectJpa> projectJpaCaptor = ArgumentCaptor.forClass(ProjectJpa.class);
 
         fieldService.deleteField(projectId, fieldId);
 
-        verify(projectRepository).save(projectJpaCaptor.capture());
-        assertThat(projectJpaCaptor.getValue().getFields()).hasSize(4);
+        assertThat(projectJpa.getFields()).doesNotContain(fieldJpa);
     }
 
     @Test
@@ -204,7 +197,7 @@ class FieldServiceTest {
 
         assertThatExceptionOfType(EntityNotFoundException.class)
                 .isThrownBy(() -> fieldService.deleteField(projectId, fieldId))
-                .withMessage(HttpUtil.MISSING_PROJECT_WITH_ID);
+                .withMessage(HttpErrorUtil.MISSING_PROJECT_WITH_ID);
 
         verify(projectRepository, never()).save(any());
     }
@@ -220,7 +213,7 @@ class FieldServiceTest {
 
         assertThatExceptionOfType(EntityNotFoundException.class)
                 .isThrownBy(() -> fieldService.deleteField(projectId, fieldId))
-                .withMessage(HttpUtil.MISSING_FIELD_WITH_ID);
+                .withMessage(HttpErrorUtil.MISSING_FIELD_WITH_ID);
 
         verify(projectRepository, never()).save(any());
     }

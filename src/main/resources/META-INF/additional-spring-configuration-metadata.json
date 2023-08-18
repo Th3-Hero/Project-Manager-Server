@@ -2,6 +2,6 @@
   {
     "name": "app.url",
     "type": "java.lang.String",
-    "description": "Url of the web server eg. 'http://localhost:5555/'"
+    "description": "Url of the web server eg. 'http://localhost:5555/'."
   }
 ]}

@@ -17,8 +17,8 @@ import com.th3hero.projectmanagerserver.repositories.ProjectRepository;
 import com.th3hero.projectmanagerserver.repositories.TagRepository;
 import com.th3hero.projectmanagerserver.utils.CollectionUtils;
 
-import static com.th3hero.projectmanagerserver.utils.HttpUtil.MISSING_PROJECT_WITH_ID;
-import static com.th3hero.projectmanagerserver.utils.HttpUtil.MISSING_TAG_WITH_ID;
+import static com.th3hero.projectmanagerserver.utils.HttpErrorUtil.MISSING_PROJECT_WITH_ID;
+import static com.th3hero.projectmanagerserver.utils.HttpErrorUtil.MISSING_TAG_WITH_ID;
 
 
 
@@ -34,7 +34,6 @@ public class TagService {
     private final ProjectRepository projectRepository;
     private final TagRepository tagRepository;
 
-    @SuppressWarnings("java:S1612")
     public Collection<Tag> listTags() {
         return CollectionUtils.transform(
             tagRepository.findAll(),
@@ -42,7 +41,6 @@ public class TagService {
         );
     }
 
-    @SuppressWarnings("java:S1612")
     public Collection<Tag> getTagsOnProject(UUID projectId) {
         ProjectJpa projectJpa = projectRepository.findById(projectId)
             .orElseThrow(() -> new EntityNotFoundException(MISSING_PROJECT_WITH_ID));

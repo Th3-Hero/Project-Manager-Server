@@ -10,31 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @ExtendWith(MockitoExtension.class)
-public class FieldUploadTest {
-
-    @Test
-    void customGetters() {
-        final var title = "TestTitle";
-        final var content = "TestContent";
-        final var fieldUpload = new FieldUpload(title, content);
-
-        assertThat(fieldUpload.title()).isEqualTo(title);
-        assertThat(fieldUpload.content()).isEqualTo(content);
-    }
-
-
-    /**
-     * We never want to return null fields to the user.
-     * So anytime they upload a dto we will use default values if a field is left null.
-     * This is a test of the custom getters for fieldUpload
-     */
-    @Test
-    void customGetters_nullFields() {
-        final var fieldUpload = new FieldUpload(null, null);
-
-        assertThat(fieldUpload.title()).isNotNull();
-        assertThat(fieldUpload.content()).isNotNull();
-    }
+class FieldUploadTest {
 
     @Test
     void convertToJpa() {
@@ -58,10 +34,9 @@ public class FieldUploadTest {
 
         final var result = fieldUpload.convertToJpa(projectJpa);
 
-        assertThat(result.getTitle()).isNotNull();
-        assertThat(result.getContent()).isNotNull();
+        assertThat(result.getTitle()).isEmpty();
+        assertThat(result.getContent()).isEmpty();
         assertThat(result.getProject()).isEqualTo(projectJpa);
-        assertThat(result).isInstanceOf(FieldJpa.class);
     }
 
 }

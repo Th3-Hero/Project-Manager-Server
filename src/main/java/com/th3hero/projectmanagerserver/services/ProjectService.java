@@ -25,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 public class ProjectService {
     private final ProjectRepository projectRepository;
 
-    @SuppressWarnings("java:S1612")
     public Collection<Project> listProjects() {
         return CollectionUtils.transform(
             projectRepository.findAll(),
@@ -44,23 +43,22 @@ public class ProjectService {
         return projectRepository.save(project.convertToJpa()).convertToDto();
     }
 
-    @SuppressWarnings("java:S1612")
-    public Project updateProject(UUID projectId, ProjectUpload project) {
+    public Project updateProject(UUID projectId, ProjectUpload projectUpload) {
         ProjectJpa projectJpa = projectRepository.findById(projectId)
             .orElseThrow(() -> new EntityNotFoundException("Unable to find existing project with given id"));
 
-        if (project.name() != null) {
-            projectJpa.setName(project.name());
+        if (projectUpload.name() != null) {
+            projectJpa.setName(projectUpload.name());
         }
-        if (project.description() != null) {
-            projectJpa.setDescription(projectJpa.getDescription());
+        if (projectUpload.description() != null && !projectUpload.description().isEmpty()) {
+            projectJpa.setDescription(projectUpload.description());
         }
-        if (project.fields() != null || !project.fields().isEmpty()) {
-            List<FieldJpa> fields = project.fields().stream().map(field -> field.convertToJpa(projectJpa)).toList();
+        if (projectUpload.fields() != null && !projectUpload.fields().isEmpty()) {
+            List<FieldJpa> fields = projectUpload.fields().stream().map(field -> field.convertToJpa(projectJpa)).toList();
             CollectionUtils.replaceList(projectJpa.getFields(), fields);
         }
-        if (project.tags() != null || !project.tags().isEmpty()) {
-            List<TagJpa> tagJpas = project.tags().stream().map(TagUpload::convertToJpa).toList();
+        if (projectUpload.tags() != null && !projectUpload.tags().isEmpty()) {
+            List<TagJpa> tagJpas = projectUpload.tags().stream().map(TagUpload::convertToJpa).toList();
             CollectionUtils.replaceList(projectJpa.getTags(), tagJpas);
         }
 

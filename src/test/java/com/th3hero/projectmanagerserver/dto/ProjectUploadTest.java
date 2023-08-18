@@ -1,7 +1,5 @@
 package com.th3hero.projectmanagerserver.dto;
 
-import com.th3hero.projectmanagerserver.TestEntities;
-import com.th3hero.projectmanagerserver.entities.FieldJpa;
 import com.th3hero.projectmanagerserver.entities.ProjectJpa;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,14 +9,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static  org.mockito.Mockito.when;
-import static  org.mockito.Mockito.never;
-import static  org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class ProjectUploadTest {
+class ProjectUploadTest {
 
     @Test
     void customGetters() {

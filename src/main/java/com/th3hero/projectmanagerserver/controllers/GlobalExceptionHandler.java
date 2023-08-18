@@ -18,12 +18,6 @@ public class GlobalExceptionHandler {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
-    @ExceptionHandler(FailedExpectedEntityRetrievalException.class)
-    public void failedEntityRetrieval(FailedExpectedEntityRetrievalException e) {
-        e.printStackTrace();
-        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-    }
-
     @ExceptionHandler(ActionAlreadyPreformedException.class)
     public void actionAlreadyPreformedException(ActionAlreadyPreformedException e) {
         throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());

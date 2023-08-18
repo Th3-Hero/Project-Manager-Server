@@ -68,8 +68,8 @@ class CollectionUtilsTest {
 
     @Test
     void replaceList_emptySource() {
-        final List<Integer> destination = new ArrayList<>(Arrays.asList(1, 2, 3));
-        final List<Integer> source = new ArrayList<>(Arrays.asList());
+        final List<Integer> destination = new ArrayList<>(List.of(1, 2, 3));
+        final List<Integer> source = new ArrayList<>();
 
         final var result = CollectionUtils.replaceList(destination, source);
 

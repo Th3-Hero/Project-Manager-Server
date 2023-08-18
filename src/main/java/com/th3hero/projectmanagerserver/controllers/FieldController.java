@@ -43,16 +43,16 @@ public class FieldController {
         return fieldService.createField(projectId, fieldUpload);
     }
 
-    @PostMapping("/{fieldId}/{projectId}")
+    @PostMapping("/{projectId}/{fieldId}")
     public Field updateField(
-        @PathVariable UUID fieldId,
         @PathVariable UUID projectId,
+        @PathVariable UUID fieldId,
         @RequestBody FieldUpload fieldUpload
     ) {
         return fieldService.updateField(fieldId, projectId, fieldUpload);
     }
 
-    @DeleteMapping("/{fieldId}/{projectId}")
+    @DeleteMapping("/{projectId}/{fieldId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteField(
         @PathVariable UUID projectId,

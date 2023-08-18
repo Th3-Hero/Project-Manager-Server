@@ -5,7 +5,6 @@ import com.th3hero.projectmanagerserver.entities.ProjectJpa;
 import com.th3hero.projectmanagerserver.entities.TagJpa;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,7 +29,7 @@ public final class TestEntities {
                 .description("TestDescription")
                 .build();
     }
-    
+
     public static ProjectJpa projectJpaWithFields(UUID id, Integer numOfFields) {
         var projectJpa = TestEntities.projectJpa(id);
         projectJpa.setFields(
@@ -58,15 +57,6 @@ public final class TestEntities {
                 TestEntities.tagJpas(numOfTags)
         );
         return projectJpa;
-    }
-
-    public static FieldJpa fieldJpa(ProjectJpa projectJpa) {
-        return FieldJpa.builder()
-                .id(TEST_FIELD_ID)
-                .project(projectJpa)
-                .title("TestTitle")
-                .content("TestContent")
-                .build();
     }
 
     public static FieldJpa fieldJpa(UUID id, String name,  ProjectJpa projectJpa) {
@@ -123,6 +113,17 @@ public final class TestEntities {
             );
         }
 
+        return projectJpaList;
+    }
+
+    public static List<ProjectJpa> projectJpas(Integer size) {
+        List<ProjectJpa> projectJpaList = new ArrayList<>();
+
+        for (int i = 0; i < size; i++) {
+            projectJpaList.add(
+                    TestEntities.projectJpa()
+            );
+        }
 
         return projectJpaList;
     }

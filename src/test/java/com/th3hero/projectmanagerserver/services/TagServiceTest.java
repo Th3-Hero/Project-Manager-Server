@@ -17,9 +17,7 @@ import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.OngoingStubbing;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +29,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class TagServiceTest {
+class TagServiceTest {
     @Mock
     private ProjectRepository projectRepository;
 
@@ -44,7 +42,6 @@ public class TagServiceTest {
 
     @Test
     void listTags() {
-//        TODO: Not sure how to exactly test this
         final var tagJpaList = TestEntities.tagJpas(5);
 
         when(tagRepository.findAll())
@@ -52,9 +49,9 @@ public class TagServiceTest {
 
         final var result = tagService.listTags();
 
-        assertThat(result).hasSize(5);
-        final Collection<Tag> dtos = tagJpaList.stream().map(TagJpa::convertToDto).toList();
-        assertThat(result).containsExactlyInAnyOrderElementsOf(dtos);
+        assertThat(result).extracting(Tag::name).containsExactlyElementsOf(
+                tagJpaList.stream().map(TagJpa::getName).toList()
+        );
     }
 
     @Test
@@ -169,7 +166,6 @@ public class TagServiceTest {
     @Test
     void deleteTagById_noProjectsWithTag() {
         final var tagId = TestEntities.TEST_TAG_ID;
-        final var tagJpa = TestEntities.tagJpa();
 
         when(tagRepository.existsById(tagId))
                 .thenReturn(true);

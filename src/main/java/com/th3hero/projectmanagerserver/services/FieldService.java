@@ -14,8 +14,8 @@ import com.th3hero.projectmanagerserver.exceptions.FailedExpectedEntityRetrieval
 import com.th3hero.projectmanagerserver.repositories.ProjectRepository;
 import com.th3hero.projectmanagerserver.utils.CollectionUtils;
 
-import static com.th3hero.projectmanagerserver.utils.HttpUtil.MISSING_FIELD_WITH_ID;
-import static com.th3hero.projectmanagerserver.utils.HttpUtil.MISSING_PROJECT_WITH_ID;
+import static com.th3hero.projectmanagerserver.utils.HttpErrorUtil.MISSING_FIELD_WITH_ID;
+import static com.th3hero.projectmanagerserver.utils.HttpErrorUtil.MISSING_PROJECT_WITH_ID;
 
 
 
@@ -29,7 +29,6 @@ import lombok.RequiredArgsConstructor;
 public class FieldService {
     private final ProjectRepository projectRepository;
 
-    @SuppressWarnings("java:S1612")
     public Collection<Field> getFieldsOnProject(UUID projectId) {
         ProjectJpa projectJpa = projectRepository.findById(projectId)
             .orElseThrow(() -> new EntityNotFoundException(MISSING_PROJECT_WITH_ID));
@@ -49,24 +48,11 @@ public class FieldService {
         projectJpa.getFields().add(fieldJpa);
         projectJpa = projectRepository.save(projectJpa);
 
-        List<FieldJpa> updateFields = (List<FieldJpa>) projectJpa.getFields();
-
-        updateFields.removeIf(fieldItem ->
-            !(fieldItem.getTitle().equals(fieldJpa.getTitle()) && fieldItem.getContent().equals(fieldJpa.getContent())));
-
-        if (updateFields.isEmpty()) {
-            throw new FailedExpectedEntityRetrievalException("I messed up... Small surprise");
-        }
-
-        var cretedFieldJpa = updateFields.get(0);
-//        if (cretedFieldJpa.getTitle() == null) {
-//            cretedFieldJpa.setTitle("");
-//        }
-//        if (cretedFieldJpa.getContent() == null) {
-//            cretedFieldJpa.setTitle("");
-//        }
-
-        return cretedFieldJpa.convertToDto();
+        return CollectionUtils.findIn(
+                projectJpa.getFields(),
+                field -> (field.getTitle().equals(fieldJpa.getTitle()) && field.getContent().equals(fieldJpa.getContent()))
+        ).orElseThrow(() -> new FailedExpectedEntityRetrievalException("Failed to retrieve an expected entity"))
+                .convertToDto();
     }
 
     public Field updateField(UUID fieldId, UUID projectId, FieldUpload fieldUpload) {
@@ -103,9 +89,7 @@ public class FieldService {
         FieldJpa fieldJpa = projectJpa.getFields().stream().filter(field -> field.getId().equals(fieldId)).findFirst()
             .orElseThrow(() -> new EntityNotFoundException(MISSING_FIELD_WITH_ID));
 
-        if (projectJpa.getFields().remove(fieldJpa)) {
-            projectRepository.save(projectJpa);
-        }
+        projectJpa.getFields().remove(fieldJpa);
     }
 
 }
