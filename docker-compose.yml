@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  app:
+    container_name: project-manager-server
+    image: 'docker-spring-boot-postgres:latest'
+    build: ./
+    ports:
+      - "8080:8080"
+    depends_on:
+      - project-manger-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://project-manger-db:5432/project-manager-server
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=password
+
+  project-manger-db:
+    image: 'postgres'
+    container_name: project-manger-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=project-manager-server
