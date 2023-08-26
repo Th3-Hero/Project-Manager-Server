@@ -1,13 +1,12 @@
 package com.th3hero.projectmanagerserver.dto;
 
-import java.util.List;
-
 import com.th3hero.projectmanagerserver.entities.FieldJpa;
 import com.th3hero.projectmanagerserver.entities.ProjectJpa;
 import com.th3hero.projectmanagerserver.entities.TagJpa;
 import com.th3hero.projectmanagerserver.utils.CollectionUtils;
-
 import jakarta.validation.constraints.NotBlank;
+
+import java.util.List;
 
 @SuppressWarnings("java:S1612")
 public record ProjectUpload(

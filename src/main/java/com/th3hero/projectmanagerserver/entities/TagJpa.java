@@ -1,24 +1,11 @@
 package com.th3hero.projectmanagerserver.entities;
 
+import com.th3hero.projectmanagerserver.dto.Tag;
+import jakarta.persistence.*;
+import lombok.*;
+
 import java.io.Serializable;
 import java.util.UUID;
-
-import com.th3hero.projectmanagerserver.dto.Tag;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter

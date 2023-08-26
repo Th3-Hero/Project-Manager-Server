@@ -1,10 +1,10 @@
 package com.th3hero.projectmanagerserver.dto;
 
 
+import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 import java.util.UUID;
-
-import jakarta.validation.constraints.NotNull;
 
 public record Project(
     @NotNull UUID id,

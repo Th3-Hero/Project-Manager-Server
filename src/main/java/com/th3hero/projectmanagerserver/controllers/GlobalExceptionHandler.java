@@ -1,15 +1,11 @@
 package com.th3hero.projectmanagerserver.controllers;
 
 import com.th3hero.projectmanagerserver.exceptions.ActionAlreadyPreformedException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
-
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ResponseStatusException;
-
-import com.th3hero.projectmanagerserver.exceptions.FailedExpectedEntityRetrievalException;
-
-import jakarta.persistence.EntityNotFoundException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {

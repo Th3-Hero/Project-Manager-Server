@@ -1,7 +1,6 @@
 package com.th3hero.projectmanagerserver.dto;
 
 import com.th3hero.projectmanagerserver.entities.TagJpa;
-
 import jakarta.validation.constraints.NotBlank;
 
 public record TagUpload(

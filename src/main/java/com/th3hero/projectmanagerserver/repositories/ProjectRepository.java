@@ -1,11 +1,10 @@
 package com.th3hero.projectmanagerserver.repositories;
 
-import java.util.List;
-import java.util.UUID;
-
+import com.th3hero.projectmanagerserver.entities.ProjectJpa;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.th3hero.projectmanagerserver.entities.ProjectJpa;
+import java.util.List;
+import java.util.UUID;
 
 
 public interface ProjectRepository extends JpaRepository<ProjectJpa, UUID> {

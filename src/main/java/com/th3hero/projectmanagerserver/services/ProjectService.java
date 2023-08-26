@@ -1,23 +1,21 @@
 package com.th3hero.projectmanagerserver.services;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
-
-import com.th3hero.projectmanagerserver.dto.TagUpload;
-import org.springframework.stereotype.Service;
-
 import com.th3hero.projectmanagerserver.dto.Project;
 import com.th3hero.projectmanagerserver.dto.ProjectUpload;
+import com.th3hero.projectmanagerserver.dto.TagUpload;
 import com.th3hero.projectmanagerserver.entities.FieldJpa;
 import com.th3hero.projectmanagerserver.entities.ProjectJpa;
 import com.th3hero.projectmanagerserver.entities.TagJpa;
 import com.th3hero.projectmanagerserver.repositories.ProjectRepository;
 import com.th3hero.projectmanagerserver.utils.CollectionUtils;
-
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional

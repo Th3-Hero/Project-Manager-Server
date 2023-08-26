@@ -1,11 +1,5 @@
 package com.th3hero.projectmanagerserver.services;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
-
-import org.springframework.stereotype.Service;
-
 import com.th3hero.projectmanagerserver.dto.Field;
 import com.th3hero.projectmanagerserver.dto.FieldUpload;
 import com.th3hero.projectmanagerserver.entities.FieldJpa;
@@ -13,15 +7,16 @@ import com.th3hero.projectmanagerserver.entities.ProjectJpa;
 import com.th3hero.projectmanagerserver.exceptions.FailedExpectedEntityRetrievalException;
 import com.th3hero.projectmanagerserver.repositories.ProjectRepository;
 import com.th3hero.projectmanagerserver.utils.CollectionUtils;
-
-import static com.th3hero.projectmanagerserver.utils.HttpErrorUtil.MISSING_FIELD_WITH_ID;
-import static com.th3hero.projectmanagerserver.utils.HttpErrorUtil.MISSING_PROJECT_WITH_ID;
-
-
-
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.UUID;
+
+import static com.th3hero.projectmanagerserver.utils.HttpErrorUtil.MISSING_FIELD_WITH_ID;
+import static com.th3hero.projectmanagerserver.utils.HttpErrorUtil.MISSING_PROJECT_WITH_ID;
 
 @Service
 @Transactional
