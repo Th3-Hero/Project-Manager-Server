@@ -25,7 +25,7 @@ public class FieldController {
     @GetMapping("/{projectId}")
     @Operation(summary = "Get a list of Fields on a project")
     public Collection<Field> getFieldsOnProject(
-        @PathVariable @NotBlank(message = "Project id is required") UUID projectId
+        @PathVariable UUID projectId
     ) {
         return fieldService.getFieldsOnProject(projectId);
     }
@@ -34,7 +34,7 @@ public class FieldController {
     @Operation(summary = "Create a new Field")
     @ResponseStatus(HttpStatus.CREATED)
     public Field createField(
-        @PathVariable @NotBlank(message = "Project id is required") UUID projectId,
+        @PathVariable UUID projectId,
         @RequestBody FieldUpload fieldUpload
     ) {
         return fieldService.createField(projectId, fieldUpload);
@@ -43,8 +43,8 @@ public class FieldController {
     @PostMapping("/{projectId}/{fieldId}")
     @Operation(summary = "Update an existing Field")
     public Field updateField(
-        @PathVariable @NotBlank(message = "Project id is required") UUID projectId,
-        @PathVariable @NotBlank(message = "Field id is required") UUID fieldId,
+        @PathVariable UUID projectId,
+        @PathVariable UUID fieldId,
         @RequestBody FieldUpload fieldUpload
     ) {
         return fieldService.updateField(fieldId, projectId, fieldUpload);
@@ -54,8 +54,8 @@ public class FieldController {
     @Operation(summary = "Delete a Field by its id")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteField(
-        @PathVariable @NotBlank(message = "Project id is required") UUID projectId,
-        @PathVariable @NotBlank(message = "Field id is required") UUID fieldId
+        @PathVariable UUID projectId,
+        @PathVariable UUID fieldId
     ) {
         fieldService.deleteField(projectId, fieldId);
     }

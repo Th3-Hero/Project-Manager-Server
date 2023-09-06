@@ -32,7 +32,7 @@ public class ProjectController {
     @GetMapping("/{projectId}")
     @Operation(summary = "Get a project by its id")
     public Project getProjectById(
-        @PathVariable @NotBlank(message = "Project id is required") UUID projectId
+        @PathVariable UUID projectId
     ) {
         return projectService.getProjectById(projectId);
     }
@@ -49,7 +49,7 @@ public class ProjectController {
     @PostMapping("/{projectId}")
     @Operation(summary = "Update an existing Project")
     public Project updateProject(
-        @PathVariable @NotBlank(message = "Project id is required") UUID projectId,
+        @PathVariable UUID projectId,
         @RequestBody ProjectUpload project
     ) {
         return projectService.updateProject(projectId, project);
@@ -62,6 +62,14 @@ public class ProjectController {
         @PathVariable UUID projectId
     ) {
         projectService.deleteProject(projectId);
+    }
+
+    @Operation(summary = "Export a Project to yaml format")
+    @GetMapping("/export/{projectId}")
+    public byte[] exportProjectToYaml(
+            @PathVariable UUID projectId
+    ) {
+        return projectService.exportProjectToYaml(projectId);
     }
 
 }

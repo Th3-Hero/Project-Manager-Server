@@ -1,5 +1,8 @@
 package com.th3hero.projectmanagerserver.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.th3hero.projectmanagerserver.dto.Project;
 import com.th3hero.projectmanagerserver.dto.ProjectUpload;
 import com.th3hero.projectmanagerserver.dto.TagUpload;
@@ -8,9 +11,11 @@ import com.th3hero.projectmanagerserver.entities.ProjectJpa;
 import com.th3hero.projectmanagerserver.entities.TagJpa;
 import com.th3hero.projectmanagerserver.repositories.ProjectRepository;
 import com.th3hero.projectmanagerserver.utils.CollectionUtils;
+import com.th3hero.projectmanagerserver.utils.HttpErrorUtil;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -32,7 +37,7 @@ public class ProjectService {
 
     public Project getProjectById(UUID projectId) {
         ProjectJpa projectJpa = projectRepository.findById(projectId)
-            .orElseThrow(() -> new EntityNotFoundException("Unable to find project with provided id"));
+            .orElseThrow(() -> new EntityNotFoundException(HttpErrorUtil.MISSING_PROJECT_WITH_ID));
 
         return projectJpa.convertToDto();
     }
@@ -43,7 +48,7 @@ public class ProjectService {
 
     public Project updateProject(UUID projectId, ProjectUpload projectUpload) {
         ProjectJpa projectJpa = projectRepository.findById(projectId)
-            .orElseThrow(() -> new EntityNotFoundException("Unable to find existing project with given id"));
+            .orElseThrow(() -> new EntityNotFoundException(HttpErrorUtil.MISSING_PROJECT_WITH_ID));
 
         if (projectUpload.name() != null) {
             projectJpa.setName(projectUpload.name());
@@ -65,10 +70,24 @@ public class ProjectService {
 
     public void deleteProject(UUID projectId) {
         if (!projectRepository.existsById(projectId)) {
-            throw new EntityNotFoundException("Unable to find Project with provided id");
+            throw new EntityNotFoundException(HttpErrorUtil.MISSING_PROJECT_WITH_ID);
         }
 
         projectRepository.deleteById(projectId);
+    }
+
+    public byte[] exportProjectToYaml(UUID projectId) {
+        ProjectJpa projectJpa = projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException(HttpErrorUtil.MISSING_PROJECT_WITH_ID));
+
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+
+        try {
+            return mapper.writeValueAsBytes(projectJpa.convertToDto());
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 }

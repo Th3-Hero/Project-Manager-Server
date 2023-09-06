@@ -31,7 +31,7 @@ public class TagController {
     @GetMapping("/{projectId}")
     @Operation(summary = "Get a list of tags that are applied to a specific project")
     public Collection<Tag> getTagsOnProject(
-        @PathVariable @NotBlank(message = "A project id is required") UUID projectId
+        @PathVariable UUID projectId
     ) {
         return tagService.getTagsOnProject(projectId);
     }
@@ -48,7 +48,7 @@ public class TagController {
     @PostMapping("/{tagId}")
     @Operation(summary = "Edit an existing tag")
     public Tag updateTag(
-        @PathVariable @NotBlank(message = "Tag id is required") UUID tagId,
+        @PathVariable UUID tagId,
         @RequestBody TagUpload tag
     ) {
         return tagService.updateTag(tagId, tag);
@@ -58,7 +58,7 @@ public class TagController {
     @Operation(summary = "Delete a tag by it's id")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTagById(
-        @PathVariable @NotBlank(message = "Tag id is required") UUID tagId
+        @PathVariable UUID tagId
     ) {
         tagService.deleteTagById(tagId);
     }
@@ -66,8 +66,8 @@ public class TagController {
     @Operation(summary = "Add an existing Tag to an existing Project")
     @PostMapping("/{tagId}/{projectId}")
     public Project addTagToProject(
-        @PathVariable @NotBlank(message = "Tag id is required") UUID tagId,
-        @PathVariable @NotBlank(message = "Project id is required") UUID projectId
+        @PathVariable UUID tagId,
+        @PathVariable UUID projectId
     ) {
         return tagService.addTagToProject(tagId, projectId);
     }
